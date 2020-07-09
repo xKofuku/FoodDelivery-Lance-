@@ -30,7 +30,7 @@ Seed();
 let userRoutes = require("./routes/User");
 
 //Route Use
-app.use("/api/users", userRoutes);
+app.use("*", userRoutes);
 
 //App listen
 app.listen(PORT, () => {
