@@ -4,7 +4,7 @@ const { MONGOURI } = require("./keys/keys");
 const Seed = require("./seed");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT;
 
 //Connection to Mongo
 
@@ -30,9 +30,9 @@ Seed();
 let userRoutes = require("./routes/User");
 
 //Route Use
-app.use("*", userRoutes);
+app.use("/api/users", userRoutes);
 
 //App listen
-app.listen(PORT, () => {
+app.listen(PORT || 3000, () => {
 	console.log(`Server started on port`);
 });
