@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const userAuthSchema = mongoose.Schema({
 	username: String,
 	password: String,
+	userType: String,
 	userInfo: {
 		id: {
 			type: mongoose.Schema.Types.ObjectId,
