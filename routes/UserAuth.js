@@ -18,7 +18,7 @@ router.post("/token", (req, res) => {
 		if (err) {
 			return res.sendStatus(403);
 		}
-		const accessToken = generateAccessToken({ name: user.username });
+		const accessToken = generateAccessToken({ username: user.username });
 		res.json({ accessToken: accessToken });
 	});
 });
@@ -30,8 +30,12 @@ router.post("/login", (req, res) => {
 		}
 		try {
 			if (await bcrypt.compare(req.body.password, user.password)) {
-				const refreshToken = jwt.sign({username: user.username}, process.env.REFRESH_TOKEN_SECRET);
-				const accessToken = generateAccessToken({username: user.username});
+				const refreshToken = jwt.sign(
+					{ username: user.username },
+					process.env.REFRESH_TOKEN_SECRET
+				);
+				refreshTokens.push(refreshToken); //Delete after fixing refreshToken storages
+				const accessToken = generateAccessToken({ username: user.username });
 				res.json({ accessToken: accessToken, refreshToken: refreshToken });
 			} else {
 				res.send("Not Allowed");
@@ -44,11 +48,11 @@ router.post("/login", (req, res) => {
 
 router.delete("/logout", (req, res) => {
 	refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
-	res.sendStatus(404);
+	res.sendStatus(204);
 });
 
 function generateAccessToken(user) {
-	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
+	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10s" });
 }
 
 module.exports = router;
