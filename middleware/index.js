@@ -9,7 +9,6 @@ middlewareObj.authenticateToken = function (req, res, next) {
 		return res.sendStatus(401);
 	}
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-		console.log(user);
 		if (err) {
 			return res.sendStatus(403);
 		}

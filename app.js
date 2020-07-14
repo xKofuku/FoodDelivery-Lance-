@@ -2,11 +2,21 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const { MONGOURI } = require("./keys/keys");
 const Seed = require("./seed");
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
+
+// app.use(
+// 	jwt({
+// 		secret: process.env.REFRESH_TOKEN_SECRET,
+// 		getToken: (req) => req.cookies.token,
+// 	})
+// );
 
 const PORT = process.env.PORT;
 
@@ -32,11 +42,9 @@ mongoose.connection.on("error", (error) => {
 
 //Route Imports
 let userRoutes = require("./routes/User");
-let userAuth = require("./routes/UserAuth");
 
 //Route Use
 app.use("/api/users", userRoutes);
-app.use("/api/users", userAuth);
 
 //App listen
 app.listen(PORT || 3000, () => {
