@@ -4,16 +4,22 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const middleware = require("../middleware/index");
+const ROLE = require("../helpers/UserRoles");
 
-router.get("/", middleware.authenticateToken, (req, res) => {
-	User.find()
-		.then(function (user) {
-			res.json(user);
-		})
-		.catch(function (user) {
-			res.send(user);
-		});
-});
+router.get(
+	"/",
+	middleware.authenticateToken,
+	middleware.checkRole(ROLE.ADMIN),
+	(req, res) => {
+		User.find()
+			.then(function (user) {
+				res.json(user);
+			})
+			.catch(function (user) {
+				res.send(user);
+			});
+	}
+);
 
 router.post("/register", async (req, res) => {
 	try {
@@ -25,7 +31,6 @@ router.post("/register", async (req, res) => {
 		res.status(500).send();
 	}
 });
-
 
 router.post("/token", (req, res) => {
 	const refreshToken = req.cookies.refreshToken;
@@ -61,7 +66,7 @@ router.post("/login", (req, res) => {
 					httpOnly: true,
 					//secure: true
 				});
-				res.json({ accessToken: accessToken, refreshToken: refreshToken });
+				res.json({ accessToken: accessToken });
 			} else {
 				res.send("Not Allowed");
 			}

@@ -4,21 +4,21 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+//const cors = require("cors");
 const { MONGOURI } = require("./keys/keys");
 const Seed = require("./seed");
+
+const PORT = process.env.PORT;
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-
 // app.use(
-// 	jwt({
-// 		secret: process.env.REFRESH_TOKEN_SECRET,
-// 		getToken: (req) => req.cookies.token,
+// 	cors({
+// 		origin: process.env.CORS_ORIGIN,
+// 		credentials: true,
 // 	})
 // );
-
-const PORT = process.env.PORT;
 
 //Connection to Mongo
 
