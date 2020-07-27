@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 //const cors = require("cors");
 const { MONGOURI } = require("./keys/keys");
 const Seed = require("./seed");
+const connectDB = require("./config/db");
 
 const PORT = process.env.PORT;
 
@@ -21,19 +22,7 @@ app.use(cookieParser());
 // );
 
 //Connection to Mongo
-
-mongoose.connect(MONGOURI, {
-	useUnifiedTopology: true,
-	useNewUrlParser: true,
-});
-
-mongoose.connection.on("connected", () => {
-	console.log("Connected to Mongo");
-});
-
-mongoose.connection.on("error", (error) => {
-	console.log("Error" + error);
-});
+connectDB();
 
 //Seeds the database
 //Seed();
@@ -41,9 +30,11 @@ mongoose.connection.on("error", (error) => {
 //Model Schema Imports
 
 //Route Imports
+let authRoutes = require("./routes/Auth");
 let userRoutes = require("./routes/User");
 
 //Route Use
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 
 //App listen
