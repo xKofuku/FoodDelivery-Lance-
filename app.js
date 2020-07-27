@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 //const cors = require("cors");
-const { MONGOURI } = require("./keys/keys");
 const Seed = require("./seed");
 const connectDB = require("./config/db");
 
