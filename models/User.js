@@ -5,6 +5,7 @@ const userAuthSchema = mongoose.Schema({
 		type: String,
 		required: true,
 		trim: true,
+		unique: true,
 	},
 	password: {
 		type: String,
@@ -15,7 +16,7 @@ const userAuthSchema = mongoose.Schema({
 		default: "customer",
 		enum: ["customer", "rider", "store", "admin"],
 	},
-	accessToken: {
+	refreshToken: {
 		type: String,
 	},
 	userInfo: {

@@ -20,11 +20,11 @@ middlewareObj.authenticateToken = function (req, res, next) {
 middlewareObj.checkRole = function (role) {
 	return (req, res, next) => {
 		if (req.user.role !== role) {
-			res.sendStatus(401);
+			
 			return res.send("Not Allowed");
 		}
+		next();
 	};
-	next();
 };
 
 module.exports = middlewareObj;

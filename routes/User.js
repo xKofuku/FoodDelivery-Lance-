@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const middleware = require("../middleware/index");
 const ROLE = require("../helpers/UserRoles");
@@ -9,7 +7,7 @@ const ROLE = require("../helpers/UserRoles");
 router.get(
 	"/",
 	middleware.authenticateToken,
-	middleware.checkRole(ROLE.ADMIN),
+	middleware.checkRole(ROLE.CUSTOMER),
 	(req, res) => {
 		User.find()
 			.then(function (user) {
@@ -21,68 +19,64 @@ router.get(
 	}
 );
 
-router.post("/register", async (req, res) => {
-	try {
-		const salt = await bcrypt.genSalt();
-		const hashedPassword = await bcrypt.hash(req.body.password, salt);
-		const user = { username: req.body.username, password: hashedPassword };
-		User.create(user);
-	} catch {
-		res.status(500).send();
+router.post(
+	"/",
+	middleware.authenticateToken,
+	middleware.checkRole(ROLE.CUSTOMER),
+	(req, res) => {
+		User.create(req.body)
+			.then(function (newUser) {
+				res.status(201).json(newUser);
+			})
+			.catch(function (err) {
+				res.send(err);
+			});
 	}
-});
+);
 
-router.post("/token", (req, res) => {
-	const refreshToken = req.cookies.refreshToken;
-	if (refreshToken == null) {
-		return res.sendStatus(401);
+router.get(
+	"/:userId",
+	middleware.authenticateToken,
+	middleware.checkRole(ROLE.CUSTOMER),
+	(req, res) => {
+		User.findById(req.params.userId)
+			.then(function (foundUser) {
+				res.json(foundUser);
+			})
+			.catch(function (err) {
+				res.send(err);
+			});
 	}
-	// if (!refreshTokens.includes(refreshToken)) {
-	// 	return res.sendStatus(403);
-	// }
-	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-		if (err) {
-			return res.sendStatus(403);
-		}
-		const accessToken = generateAccessToken({ username: user.username });
-		res.json({ accessToken: accessToken });
-	});
-});
+);
 
-router.post("/login", (req, res) => {
-	User.findOne({ username: req.body.username }, async (err, user) => {
-		if (user == null) {
-			return res.status(400).send("Cannot find user");
-		}
-		try {
-			if (await bcrypt.compare(req.body.password, user.password)) {
-				const refreshToken = jwt.sign(
-					{ username: user.username },
-					process.env.REFRESH_TOKEN_SECRET
-				);
-				const accessToken = generateAccessToken({ username: user.username });
-				res.cookie("refreshToken", refreshToken, {
-					maxAge: 3600,
-					httpOnly: true,
-					//secure: true
-				});
-				res.json({ accessToken: accessToken });
-			} else {
-				res.send("Not Allowed");
-			}
-		} catch {
-			return res.status(500);
-		}
-	});
-});
+router.put(
+	"/:userId",
+	middleware.authenticateToken,
+	middleware.checkRole(ROLE.CUSTOMER),
+	(req, res) => {
+		User.findOneAndUpdate({ _id: req.params.todoId }, req.body, { new: true })
+			.then(function (todo) {
+				res.json(todo);
+			})
+			.catch(function (err) {
+				res.send(err);
+			});
+	}
+);
 
-router.delete("/logout", (req, res) => {
-	refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
-	res.sendStatus(204);
-});
-
-function generateAccessToken(user) {
-	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1m" });
-}
+router.delete(
+	"/:userId",
+	middleware.authenticateToken,
+	middleware.checkRole(ROLE.CUSTOMER),
+	(req, res) => {
+		User.remove({ _id: req.params.todoId })
+			.then(function () {
+				res.json({ message: "We Deleted it" });
+			})
+			.catch(function (err) {
+				res.send(err);
+			});
+	}
+);
 
 module.exports = router;

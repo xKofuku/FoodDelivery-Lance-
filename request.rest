@@ -1,36 +1,37 @@
-GET http://localhost:3000/api/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTU5NDkyMzIzNiwiZXhwIjoxNTk0OTIzMjk2fQ.FX7DhXL3GZL5ciZh-VBEauXHABPPiuQcFDxMZv1Ot6s
+GET http://localhost:3000/api/auth
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZjE1OTYzMGQwOWQ5OTI3NmM2MDgxZmYiLCJ1c2VybmFtZSI6Im5ld3VzZXIiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE1OTUyNTA1ODMsImV4cCI6MTU5NTI1MDY0M30.EoIaOImkB1cxq0Lr67i5ohUPEc4HNvJPwHqoLB7rb5o
+
 
 ###
 
-POST http://localhost:3000/api/users/register
+POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-    "username": "admin1",
-    "password" : "admin1"
+    "username": "admin12131",
+    "password" : "admin"
 }
 
 ###
 
-POST http://localhost:3000/api/users/token
+POST http://localhost:3000/api/auth/token
 Content-Type: application/json
-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluMSIsImlhdCI6MTU5NDkyMTE4NX0.zYKvXpyfjQzUvMcEoDwbwmHRv5PaBH5UurItvjniZ6c; Max-Age=3; Path=/; Expires=Thu, 16 Jul 2020 17:39:49 GMT; HttpOnly
+Cookie: refreshToken=
 
 
 ###
 
-POST http://localhost:3000/api/users/login
+POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-    "username" : "admin1",
-    "password" : "admin1"
+    "username" : "admin",
+    "password" : "admin"
 }
 
 ###
 
-DELETE http://localhost:3000/api/users/logout
+DELETE http://localhost:3000/api/auth/logout
 Content-Type: application/json
 
 {
